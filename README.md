@@ -22,7 +22,7 @@ python spectrum2xy.py  ==> generate data.X, and data.Y for training
 python data_label.py  ==> update label of data in data.Y
 ```
 
-Check output file: data.X, data.Y
+Check output file: data.X, data.Y****
 
 ## analysis sound files with XGBoost and TSNE
 
