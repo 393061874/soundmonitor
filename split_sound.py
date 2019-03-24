@@ -6,7 +6,7 @@ import numpy as np
 from tqdm import tqdm  # 进度条
 import subprocess as sp
 
-WIN_LENGH = 4
+WIN_LENGH = 6
 RATE = 44100
 
 
@@ -127,7 +127,7 @@ def split_wav(input_filename):
         window_energy = energy(samples[i_start:i_end])
         change = 100 * pre_energy / window_energy
 
-        if change < 95 or change > 106:
+        if change < 99 or change > 101:
             print("detected change: %.1f" % change)
             pre_energy = window_energy
             data = samples[i_start:i_end]
