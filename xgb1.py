@@ -52,17 +52,8 @@ def main():
     print(metrics.confusion_matrix(y_test, y_predicted))
 
 
-"""
-{'max_depth': 3, 'colsample_bytree': 0.75, 'learning_rate': 0.5, 'n_estimators': 100, 'subsample': 0.75, 'min_child_weight': 6}
-Accuracy:100.00%
-             precision    recall  f1-score   support
-
-p78-180onenode12v12       1.00      1.00      1.00         7
-p78-180onenode12v6       1.00      1.00      1.00         7
-p78-180twonode12v12       1.00      1.00      1.00         5
-p78-180twonode12v6       1.00      1.00      1.00         5
-
-avg / total       1.00      1.00      1.00        24
-"""
 if __name__ == '__main__':
     main()
+"""
+example parameter: {'max_depth': 3, 'colsample_bytree': 0.75, 'learning_rate': 0.5, 'n_estimators': 100, 'subsample': 0.75, 'min_child_weight': 6}
+"""
