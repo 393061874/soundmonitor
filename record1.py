@@ -10,7 +10,6 @@ CHANNELS = 2
 RATE = 44100
 
 
-
 def record1(filename, wav_len):
     p = pyaudio.PyAudio()
 
@@ -20,7 +19,7 @@ def record1(filename, wav_len):
                     input=True,
                     frames_per_buffer=CHUNK)
 
-    print("* recording:",filename, " len(sec):",wav_len)
+    print("* recording:", filename, " len(sec):", wav_len)
 
     frames = []
 
@@ -41,11 +40,18 @@ def record1(filename, wav_len):
     wf.writeframes(b''.join(frames))
     wf.close()
 
-#plot_snd(sys.argv[1])
-if len(sys.argv)>2:
-    wav_len = int(sys.argv[2])
-if len(sys.argv)>1:
-    filename = sys.argv[1]
-else:
-    filename = "output.wav"
-record1(filename, wav_len)
+
+def main(argv):
+    if len(argv) > 2:
+        wav_len = int(argv[2])
+    else:
+        wav_len = 10
+    if len(argv) > 1:
+        filename = argv[1]
+    else:
+        filename = "output.wav"
+    record1(filename, wav_len)
+
+
+if __name__ == "__main__":
+    main(sys.argv)
