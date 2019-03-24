@@ -1,3 +1,4 @@
+#encoding: utf8
 from scipy.io import wavfile
 import os
 import sys
@@ -5,7 +6,7 @@ import numpy as np
 from tqdm import tqdm  # 进度条
 import subprocess as sp
 
-WIN_LENGH = 2
+WIN_LENGH = 4
 RATE = 44100
 
 
@@ -126,7 +127,7 @@ def split_wav(input_filename):
         window_energy = energy(samples[i_start:i_end])
         change = 100 * pre_energy / window_energy
 
-        if change < 90 or change > 110:
+        if change < 95 or change > 106:
             print("detected change: %.1f" % change)
             pre_energy = window_energy
             data = samples[i_start:i_end]
