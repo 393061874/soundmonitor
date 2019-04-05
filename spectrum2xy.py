@@ -144,12 +144,12 @@ def file2xy():
         X.append(fingerprints)
 
         png = fn.split("/")[-1].split(".")[0].split('_')[0]
-        Y.append([png, 1])
+        Y.append([png, fn])
 
     X = pd.DataFrame(X)
     Y = pd.DataFrame(Y)
     # Y.rename(index=str, columns={"0": "tps"},inplace=True)
-    Y.rename(columns={0: "label", 1: "tps"}, inplace=True)
+    Y.rename(columns={0: "label", 1: "file"}, inplace=True)
     X.to_csv('data.X')
     Y.to_csv('data.Y')
 

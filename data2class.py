@@ -79,14 +79,16 @@ def plot_tsne(X, Y):
 
         c_tps = []
         for n in label_name:
-            if label_tps[n] == "NEW": continue
-            t = int(label_tps[n])
-            if t > 1: c_tps.append(t)
+            #if label_tps[n] == "NEW": continue
+            #t = int(label_tps[n])
+            t = label_tps[n]
+            #if t > 1: c_tps.append(t)
         print()
         cluster_set[i] = set(label_name)  # ,label_name
-        cluster_tps[i] = sum(c_tps)  # / len(c_tps)
+        #cluster_tps[i] = c_tps[0] # sum(c_tps)  # / len(c_tps)
 
-        print('Cluster %i: ' % i, "tps: %.0f" % cluster_tps[i], "len:", len(label_name))
+        #print('Cluster %i: ' % i, "tps: %.0f" % cluster_tps[i], "len:", len(label_name))
+        print('Cluster %i: ' % i, "len:", len(label_name))
         print("\t:", cluster_set[i])
         print()
 
@@ -109,7 +111,7 @@ def plot_tsne(X, Y):
         # Position of each label.
         xtext, ytext = np.median(X_tsne[Y2 == i, :], axis=0)
         print(i, "==>", le.classes_[i], "\t tps:", label_tps[le.classes_[i]])
-        if int(label_tps[le.classes_[i]]) < 1:
+        if False: #int(label_tps[le.classes_[i]]) < 1:
             plotmsg = "<*>New-data"
             txt = ax.text(xtext, ytext, plotmsg, color='r', fontsize=12)
         else:
@@ -142,17 +144,17 @@ def test1():
     Y = pd.read_csv("data.Y", index_col=0)
     N = len(X.index)
 
-    group1 = Y['tps'].groupby([Y['label']])
+    group1 = Y['file'].groupby([Y['label']])
     print("group1:", group1)
     for name, group in group1:
-        label_tps[name] = "%.0f" % group.mean()
+        label_tps[name] = group # %.0f" % group.mean()
 
     Y = Y['label']  # .values.reshape(N)
     # label_tps = joblib.load("data.tps")
 
     print("X:", X.shape)
     print("Y", Y.shape)
-    print("tps:", label_tps)
+    print("file:", label_tps)
 
     plot_tsne(X, Y)
 

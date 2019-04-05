@@ -12,7 +12,6 @@ RATE = 44100
 
 def energy(samples):
     x = np.sum(np.power(samples, 2.)) / float(len(samples))
-
     return x
 
 
@@ -104,6 +103,7 @@ def split_wav(input_filename):
     # sample_rate, samples = input_data = wavfile.read(filename=input_filename, mmap=True)
 
     sr = 44100
+    sr = 16000
     samples, sample_rate = ffmpeg_load_audio(input_filename, sr, mono=True)
 
     print("sample rate:", sample_rate, " len:", len(samples), " secs:", 1.0 * len(samples) / sample_rate)
@@ -124,18 +124,20 @@ def split_wav(input_filename):
         step_no += 1
         # print "win:",win_no, i_start, " - ", i_end
 
-        window_energy = energy(samples[i_start:i_end])
-        change = 100 * pre_energy / window_energy
+        #window_energy = energy(samples[i_start:i_end])
+        #change = 100 * pre_energy / window_energy
 
-        if change < 99 or change > 101:
-            print("detected change: %.1f" % change)
-            pre_energy = window_energy
+        #if change < 99 or change > 101:
+        change = 0
+        if True:
+            #print("detected change: %.1f" % change)
+            #pre_energy = window_energy
             data = samples[i_start:i_end]
             output_file_path = "{}_{:03d}.wav".format(os.path.join(output_dir, output_filename_prefix), step_no)
             save_as_wav(output_file_path, data)  # 生成wav文件片段
         else:
             print("%.1f," % change)
-        energy_list.append(window_energy)
+        #energy_list.append(window_energy)
         pos_list.append([i_start, i_end])
 
 
