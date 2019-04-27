@@ -6,7 +6,8 @@ import numpy as np
 from tqdm import tqdm  # 进度条
 import subprocess as sp
 
-WIN_LENGH = 6
+# 控制分割声音的长度
+WIN_LENGH = 12
 RATE = 44100
 
 
@@ -79,6 +80,35 @@ def save_as_wav(file_name, data_list):
     wavfile.write(file_name, RATE, data)
 
 
+
+def open_wav(filename):
+    import wave 
+    #open a wave file, and return a Wave_read object
+    f = wave.open(filename,"rb")
+    #read the wave's format infomation,and return a tuple
+    params = f.getparams()
+    #get the info
+    nchannels, sampwidth, framerate, nframes = params[:4]
+    #print "wav params:",params
+    #Reads and returns nframes of audio, as a string of bytes. 
+    str_data = f.readframes(nframes)
+    print "read data:",len(str_data)
+    #close the stream
+    f.close()
+    #turn the wave's data to array
+    wave_data = np.fromstring(str_data, dtype = np.short)
+    #for the data is stereo,and format is LRLRLR...
+    #shape the array to n*2(-1 means fit the y coordinate)
+    wave_data.shape = -1, 2
+    #transpose the data
+    wave_data = wave_data.T
+    #calculate the time bar
+    time = np.arange(0, nframes) * (1.0/framerate)
+    
+    print "wave_data:",wave_data.shape 
+    #可能是双声道
+    return wave_data[0], framerate, time
+    
 def split_wav(input_filename):
     window_duration = WIN_LENGH  # 窗口值至少不小于step值
     step_duration = 2  # 检测步长
@@ -103,8 +133,9 @@ def split_wav(input_filename):
     # sample_rate, samples = input_data = wavfile.read(filename=input_filename, mmap=True)
 
     sr = 44100
-    sr = 16000
+    #sr = 16000
     samples, sample_rate = ffmpeg_load_audio(input_filename, sr, mono=True)
+    #samples, sample_rate, time_len = open_wav(input_filename)
 
     print("sample rate:", sample_rate, " len:", len(samples), " secs:", 1.0 * len(samples) / sample_rate)
 
