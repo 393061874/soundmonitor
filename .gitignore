@@ -3,3 +3,10 @@ debug/
 data.X
 data.Y
 output.wav
+
+tianshu/.ipynb_checkpoints
+tianshu/__pycache__
+tianshu/split
+tianshu/*.wav
+tianshu/*.MP3
+tianshu/*.csv
