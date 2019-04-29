@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import wave
+import pyaudio
 
 
 def read_csv_file(file):
@@ -89,9 +90,35 @@ def get_mfcc(audio_data, sampling_rage, mfcc_row):
     return mfcc_feature
 
 
+def get_audio_amp(file):
+    """
+    从音频文件获取特征值
+    :param file: 传入音频文件
+    :return: 返回[32, 64]特征值矩阵
+    """
+    import librosa
+    import numpy as np
+    from skimage.measure import block_reduce
+
+    # 转为频域
+    N_FFT = 1024
+    data, _ = librosa.load(file)  # 读取音频文件
+    fft = librosa.stft(data, n_fft=N_FFT, hop_length=N_FFT // 4, window=np.hanning(N_FFT))
+    amp = np.abs(fft)
+
+    # 统一维度
+    amp = block_reduce(amp, (10, 1), func=np.mean)  # 每10行取平均降维
+    if amp.shape[1] < 64:
+        amp = np.pad(amp, ((0, 0), (0, 64 - amp.shape[1])), 'constant')
+    amp = amp[:32, :64]  # 截取前[32, 64]矩阵
+
+    # 归一化
+    amp = normalization(amp, np.float32)  # 归一化到[0, 1]
+
+    return amp
 
 
-def normal_length(data, column):
+def to_same_length(data, column):
     """
     不同长度的音频获取的特征值长度也不同 这里统一长度
     :param data: 特征矩阵
@@ -236,12 +263,11 @@ def show_3d_scatter(data, label):
 
 def play_audio(audio_data, sampling_rate):
     """
-    播放音频数据
+    播放音频数据 播放时有一个前缀噪音 原因未知
     :param audio_data: 音频数据
     :param sampling_rate: 采样率
     :return: 无
     """
-    import pyaudio
 
     # 处理音频数据
     audio_data = np.array(audio_data)
@@ -261,3 +287,62 @@ def play_audio(audio_data, sampling_rate):
     stream.stop_stream()
     stream.close()
     p.terminate()
+
+
+def play_wav_file(file_path):
+    """
+    播放音频文件 播放时有一个前缀噪音 原因未知
+    :param file_path: 文件路径
+    :return: 无
+    """
+
+    # 打开文件
+    file = wave.open(file_path, "rb")
+
+    # 打开音频流
+    p = pyaudio.PyAudio()
+    stream = p.open(format=p.get_format_from_width(file.getsampwidth()),
+                    channels=file.getnchannels(),
+                    rate=file.getframerate(),
+                    output=True)
+
+    # 读取文件并播放
+    data = file.readframes(1024)
+    while data != b'':
+        stream.write(data)
+        data = file.readframes(1024)
+
+    # 关闭资源
+    stream.stop_stream()
+    stream.close()
+    p.terminate()
+
+
+def get_audio_from_mic(seconds, sampling_rate=16000):
+    """
+    录音
+    :param seconds: 录音秒数
+    :param sampling_rate: 采样率
+    :return: 录音内容 np数组[-1, 1]
+    """
+
+    p = pyaudio.PyAudio()
+
+    stream = p.open(format=pyaudio.paInt16,
+               channels=1,
+               rate=sampling_rate,
+               input=True,
+               frames_per_buffer=1024)
+    print("* recording len(sec):", seconds)
+
+    data = stream.read(int(16000 * seconds))
+    print("* done recording")
+
+    stream.stop_stream()
+    stream.close()
+    p.terminate()
+
+    audio = np.frombuffer(data, dtype=np.int16)  # 转换为numpy数据
+    audio = audio.astype(np.float) / np.iinfo(np.int16).max
+
+    return audio
