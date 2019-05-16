@@ -43,3 +43,6 @@
 #     audio = np.frombuffer(raw, dtype=np.int16)  # 数据转为矩阵格式
 #
 #     return audio
+
+# MP4提取MP3
+#   ffmpeg -i apple.mp4 -f mp3 -vn apple.mp3

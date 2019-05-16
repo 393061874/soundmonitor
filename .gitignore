@@ -6,7 +6,9 @@ output.wav
 
 tianshu/.ipynb_checkpoints
 tianshu/__pycache__
+tianshu/error_sound
 tianshu/split
+tianshu/原始声音
 tianshu/*.wav
 tianshu/*.MP3
 tianshu/*.csv
